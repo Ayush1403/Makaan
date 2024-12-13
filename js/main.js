@@ -95,7 +95,7 @@
 
                     if (data.access_token) {
                         localStorage.setItem('token', data.access_token);
-                        window.location.href = 'index.html';
+                        window.location.href = 'property-list.html';
                     } else {
                         alert('Login failed: No access token received');
                     }
