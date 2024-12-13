@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Makaan - Real Estate HTML Template</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Inter:wght@700;800&display=swap" rel="stylesheet">
+    
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="lib/animate/animate.min.css" rel="stylesheet">
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="css/style.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container-xxl bg-white p-0">
+      
+
+ <!-- Navbar (optional) -->
+  
+        <!-- Navbar Start -->
+        <div class="container-fluid nav-bar bg-transparent">
+            <nav class="navbar navbar-expand-lg bg-white navbar-light py-0 px-4">
+                <a href="index.html" class="navbar-brand d-flex align-items-center text-center">
+                    <div class="icon p-2 me-2">
+                        <img class="img-fluid" src="img/icon-deal.png" alt="Icon" style="width: 30px; height: 30px;">
+                    </div>
+                    <h1 class="m-0 text-primary">Makaan</h1>
+                </a>
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <div class="navbar-nav ms-auto">
+                        <a href="index.html" class="nav-item nav-link active">Home</a>
+                        
+                        <div class="nav-item dropdown">
+                            <a href="property-list.html" class="nav-link" >Listings</a>
+                            
+                        </div>
+                       
+                      
+                    </div>
+                 
+                        </div>
+                </div>
+            </nav>
+        </div>
+        <!-- Navbar End -->
+
+    <!-- Property Detail Section -->
+    <div class="container mt-5" id="property-detail">
+        <div class="row">
+            <div class="col-lg-6">
+                <img id="property-image" class="img-fluid rounded" src="" alt="Property Image">
+            </div>
+            <div class="col-lg-6">
+                <h2 id="property-name"></h2>
+                <p id="property-location"><i class="fa fa-map-marker-alt text-primary me-2"></i></p>
+                <h3 id="property-price"></h3>
+                <p id="property-description"></p>
+                <div class="d-flex">
+                    <div class="flex-fill"><strong>Bedrooms:</strong> <span id="property-bedrooms"></span></div>
+                    <div class="flex-fill"><strong>Bathrooms:</strong> <span id="property-bathrooms"></span></div>
+                    <div class="flex-fill"><strong>Area:</strong> <span id="property-area"></span></div>
+                </div>
+                <button class="btn btn-primary mt-3" id="contact-agent-btn">Contact Agent</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-light py-4">
+        <div class="container text-center">
+            <p>&copy; 2024 Real Estate</p>
+        </div>
+    </footer>
+
+    <!-- Script Tag to Include the JavaScript -->
+    <script>
+        (function () {
+            "use strict";
+
+            const CONFIG = {
+                API_BASE_URL: 'https://real-estate-project-y5cm.onrender.com',
+                ENDPOINTS: {
+                    PROPERTY: '/listings/'
+                }
+            };
+
+            // Utility function for API requests
+            async function apiRequest(endpoint, method = 'GET', data = null, token = null, contentType = 'application/json') {
+                try {
+                    const headers = {
+                        'Accept': 'application/json',
+                        'Content-Type': contentType,
+                    };
+
+                    if (token) headers['Authorization'] = `Bearer ${token}`;
+
+                    const response = await fetch(`${CONFIG.API_BASE_URL}${endpoint}`, {
+                        method,
+                        headers,
+                        body: data ? JSON.stringify(data) : null
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.detail || 'Something went wrong');
+                    }
+
+                    return await response.json();
+                } catch (error) {
+                    console.error('API Request Failed:', error.message);
+                    throw error;
+                }
+            }
+
+            // Fetch Property Details
+            async function fetchPropertyDetails() {
+                const propertyId = new URLSearchParams(window.location.search).get('id');
+                const token = localStorage.getItem('token');
+
+                if (!propertyId) {
+                    alert('Property ID not found.');
+                    return;
+                }
+
+                try {
+                    const property = await apiRequest(CONFIG.ENDPOINTS.PROPERTY + propertyId, 'GET', null, token);
+                    displayPropertyDetails(property);
+                } catch (error) {
+                    console.error('Error fetching property details:', error);
+                    alert('Failed to fetch property details.');
+                }
+            }
+
+            // Display Property Details
+            function displayPropertyDetails(property) {
+                document.getElementById('property-name').textContent = property.name;
+                document.getElementById('property-location').innerHTML = `<i class="fa fa-map-marker-alt text-primary me-2"></i>${property.location}`;
+                document.getElementById('property-price').textContent = property.price;
+                document.getElementById('property-description').textContent = property.description;
+                document.getElementById('property-bedrooms').textContent = property.bedrooms;
+                document.getElementById('property-bathrooms').textContent = property.bathrooms;
+                document.getElementById('property-area').textContent = property.area;
+                document.getElementById('property-image').src = property.image;
+
+                // Optionally, add a contact button functionality
+                const contactBtn = document.getElementById('contact-agent-btn');
+                contactBtn.addEventListener('click', function () {
+                    alert('Contacting the agent...');
+                });
+            }
+
+            // Run on page load
+            document.addEventListener('DOMContentLoaded', fetchPropertyDetails);
+
+        })();
+    </script>
+
+    <!-- Bootstrap JS (Optional) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>
