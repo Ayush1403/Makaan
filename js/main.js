@@ -104,10 +104,7 @@
                 }
             });
         }
-        document.getElementById("signOutBtn").addEventListener("click", function (event) {
-            event.preventDefault(); // Prevent default navigation
-            window.location.href = "index.html"; // Redirect to index.html
-        });
+            
         // Signup Event
         if (signupForm) {
             signupForm.addEventListener('submit', async (e) => {
