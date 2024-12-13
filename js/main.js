@@ -55,12 +55,12 @@
                 loginSignupBtn.innerText = 'Sign Out';
                 loginSignupBtn.addEventListener('click', () => {
                     localStorage.removeItem('token');
-                    window.location.href = 'login.html';
+                    window.location.href = 'index.html';
                 });
                 logoutBtn.style.display = 'block'; // Show logout button
             } else {
                 loginSignupBtn.innerText = 'Sign In';
-                loginSignupBtn.setAttribute('href', 'login.html');
+                loginSignupBtn.setAttribute('href', 'index.html');
                 logoutBtn.style.display = 'none'; // Hide logout button
             }
         }
@@ -136,7 +136,7 @@
                     }
 
                     alert('Signup successful! Please log in.');
-                    window.location.href = 'login.html'; // Redirect to login page after successful signup
+                    window.location.href = 'index.html'; // Redirect to login page after successful signup
 
                 } catch (error) {
                     alert('An error occurred: ' + error.message);
@@ -152,7 +152,7 @@
                 fetchListings(token);
             } else {
                 alert('Please log in to view listings');
-                window.location.href = 'login.html';
+                window.location.href = 'index.html';
             }
         }
 
